@@ -10,3 +10,5 @@ select*from Acceso
 Insert into Acceso(Usuario,Passw) Values('SergioN','0024')
 
 Insert into Acceso(Usuario,Passw) Values(,)
+
+select* from Acceso a where a.Usuario='' and a.Passw=''

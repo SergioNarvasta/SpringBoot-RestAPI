@@ -1,13 +1,13 @@
 Use EQUILIBRA_V17
-select*from CEX_EstadoPago
----TioConfirmacion ,PaisOrigen ,AlmacenDestino
+
 Select  
-     a.FechaETA         ,      q.EstadoPago         ,       a.CodigoImportacion  ,       a.FechaIngAlm,
-	 a.OCompraSG        ,      a.TotalUSD           ,       C.ProveedorCEX       ,       B.ProductoCEX,
-	 a.CantidadTM       ,      a.CantidadCNT        ,       a.NroDAM             ,       a.FechaDAMLevante,
-	 a.FechaVB          ,      v.PAI_NOMCOR as Pais ,       a.NaveDestino        ,       a.BL,
-	 l.Naviera          ,      g.PuertoDestino      ,       a.Contrato           ,       v.PAI_NOMCOR AS PaisOrigen,
-	 a.Almacen          ,      y.ConfirmaFecha      
+     ISNULL(a.FechaETA,' ')AS FechaETA,    d.Seguimiento               ,       a.CodigoImportacion  ,                        ISNULL(a.FechaIngAlm,' ') AS FechaIngAlm ,
+	 a.OCompraSG                    ,      a.TotalUSD                  ,       ISNULL(C.ProveedorCEX,' ')AS ProveedorCEX ,   ISNULL(B.ProductoCEX,' ')AS ProductoCEX ,
+	 a.CantidadTM                   ,      a.CantidadCNT               ,       a.NroDAM             ,                        ISNULL(a.FechaDAMLevante,' ')AS FechaDAMLevante,
+	 ISNULL(a.FechaVB,' ')AS FechaVB,      ISNULL(v.PAI_NOMCOR ,' ')AS Pais,   ISNULL(a.NaveDestino,' ')AS NaveDestino,      ISNULL(a.BL ,' ')AS BL,
+	 ISNULL(l.Naviera,' ')AS Naviera,      ISNULL( g.PuertoDestino,' ')AS PuertoDestino,a.Contrato ,                         ISNULL(v.PAI_NOMCOR ,' ') AS PaisOrigen,
+	 ISNULL(x.AlmacenDestino  ,' ') AS AlmacenDestino                   ,      ISNULL(y.ConfirmaFecha,' ') AS ConfirmaFecha          
+
 	From CEX_Importacion A
 	Left Join Cex_ProductoCEX B on A.IdProductoCEX=B.IdProductoCEX
 	Left Join Cex_ProveedorCEX C on A.IdProveedorCEX=C.IdProveedorCEX
@@ -35,5 +35,6 @@ Select
 	Left Join CEX_AlmacenDestino X on a.IdAlmacenDestino=x.IdAlmacenDestino
 	left join CEX_ConfirmaFecha Y on y.IdConfirmaFecha = a.IdConfirmaAlm 
 	
-	---------------------------------------------------------0011 0579 0202936376
+
+
 	

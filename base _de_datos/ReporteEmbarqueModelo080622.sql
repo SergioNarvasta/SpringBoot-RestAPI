@@ -1,20 +1,20 @@
 
-
-select *from CEX_ConfirmaFecha
-go
 use EQUILIBRA_V17
+--select*from CEX_ImportacionING
 Select 
-      ISNULL(YEAR(a.FechaETA),0)AS Año,                d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
-	  ISNULL(C.ProveedorCEX,' ')AS ProveedorCEX ,      ISNULL(z.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
+      ISNULL(YEAR(a.FechaETA),'')AS Año,               d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
+	  ISNULL(C.ProveedorCEX,' ')AS Proveedor    ,      ISNULL(z.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
 	  ISNULL(t.Marca,' ')AS Marca,                     ISNULL(CantidadTM,0)AS CantidadTM,          ISNULL(J.Incoterm,' ')AS Incoterm ,                   ISNULL(a.PrecioUSDTM,0)AS PrecioUSDTM	 ,  
 	  ISNULL(x.AlmacenDestino,' ')AS AlmacenDestino,   ISNULL(f.PuertoOrigen,' ') as PuertoOrigen, ISNULL(v.PAI_NOMCOR,'')AS PaisOrigen,                 ISNULL(g.PuertoDestino,'')AS PuertoLlegada,
 	  ISNULL(a.NaveDestino ,'')AS NaveDestino,         ISNULL(a.BL,' ')AS BL,                      ISNULL(l.Naviera,'')AS Naviera,                       ISNULL(a.IdClasificacionCEX,' ')AS Clase,
-	  ISNULL(a.MesEmbProg,0)AS MesEmbProg,             ISNULL(a.FechaContrato,' ')AS FechaContrato,ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
-	  ISNULL(DATEPART(WEEK,a.FechaETDIni),0)AS SemETDIni,ISNULL(a.BLFecha,' ')AS BLFecha,          ISNULL(a.FechaETAIni,0)AS ETAInicial,                 ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion,
-	  ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni, ISNULL(e.TipoCarga,'')AS TipoCarga,         ISNULL(g.PuertoDestino +' '+z.TipoCarga ,' ') AS Concantenar
-
-	 -- ISNULL(,' ')AS ,
-	 --ISNULL(g.PuertoDestino +' '+z.TipoCarga ,' ') AS Concantenar
+	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            ISNULL(a.FechaContrato,' ')AS FechaContrato,ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
+	  ISNULL(DATEPART(WEEK,a.FechaETDIni),'')AS SemETDIni,ISNULL(ad.FechaETD,'') AS FechaETD1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,              '' as UltimoETD,
+	  
+	 
+	 
+	
+	  ISNULL(a.BLFecha,' ')AS BLFecha,                ISNULL(a.FechaETAIni,0)AS ETAInicial,        ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion,
+	  ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,         ISNULL(g.PuertoDestino +z.TipoCarga ,'')AS Concantenar,a.FechaETD,a.FechaETDIni,ac.fechaING
 
 	From CEX_Importacion A
 	Left Join Cex_ProductoCEX B on A.IdProductoCEX=B.IdProductoCEX
@@ -44,5 +44,9 @@ Select
 	left join CEX_ConfirmaFecha Y on a.IdConfirmaAlm = y.IdConfirmaFecha   
 	left join CEX_TipoCarga Z on a.IdTipoCarga = z.IdTipoCarga
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
-	--left join CEX_ClasificacionCEX ac on a.IdClasificacionCEX = ac.IdClasificacionCEX
-	order by Año Desc
+	left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia
+	left join CEX_ImportacionETD ad on (a.cia_codcia = ad.cia_codcia and a.IdImportacion = ad.IdImportacion )
+	left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
+   order by Año desc
+
+

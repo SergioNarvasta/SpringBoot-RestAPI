@@ -1,25 +1,27 @@
 
-use EQUILIBRA_V17
+
+
 --Declare @TIngreso Int
 --SET @TIngreso =(SELECT top 1(Case When e.TipoCarga='CONTENEDORES'Then 4 When e.TipoCarga='GRANEL' Then 3 When g.PuertoDestino+e.TipoCarga='CALLAOBREAKBULK' Then 10 Else 0 End) FROM CEX_TipoCarga e,Cex_PuertoDestino g )
 --Declare @FechaIngAlmEstFin Datetime
 --SET @FechaIngAlmEstFin = (SELECT TOP 1 a.FechaETA FROM CEX_Importacion a)
-Select
-      ISNULL(YEAR(a.FechaETA),'')AS Año,               d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
+SELECT
+ISNULL(YEAR(a.FechaETA),'')AS Año,              d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
 	  ISNULL(C.ProveedorCEX,' ')AS Proveedor    ,      ISNULL(E.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
 	  ISNULL(t.Marca,' ')AS Marca,                     ISNULL(CantidadTM,0)AS CantidadTM,          ISNULL(J.Incoterm,' ')AS Incoterm ,                   ISNULL(a.PrecioUSDTM,0)AS PrecioUSDTM	 ,  
 	  ISNULL(x.AlmacenDestino,' ')AS AlmacenDestino,   ISNULL(f.PuertoOrigen,' ') as PuertoOrigen, ISNULL(v.PAI_NOMCOR,'')AS PaisOrigen,                 ISNULL(g.PuertoDestino,'')AS PuertoLlegada,
 	  ISNULL(a.NaveDestino ,'')AS NaveDestino,         ISNULL(a.BL,' ')AS BL,                      ISNULL(l.Naviera,'')AS Naviera,                       ISNULL(a.IdClasificacionCEX,' ')AS Clase,
-	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            ISNULL(a.FechaContrato,' ')AS FechaContrato,''AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
-	  ISNULL(a.FechaETDIni,'')AS SemETDIni,  ''as FechaEDT1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,   	           
-	  ISNULL(ad.UltimoETD,'')AS UltimoETD,             ISNULL(ad.UltimoETD,'')AS SemETDReal,ISNULL(a.FechaContrato,'')AS LtETDReal,
-	  ''AS CumpETD ,''AS DifDiasETD,ISNULL(a.FechaBL,' ')AS FechaBL , 
-	  ISNULL(a.FechaETAIni,0)AS ETAInicial,''as ETA1,''as ETA2,''as ETA3,''as ETA4,      ISNULL(A.FechaETA,'')AS UltimoETA  ,''AS NVariacion, 
-	  ''AS SemETAReal, ''AS LtETAReal, 
-	  ''AS CumpETASem, ''AS DifDiasETA,
+	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            ISNULL(a.FechaContrato,' ')AS FechaContrato,ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
+	  ISNULL(Datepart(Week,a.FechaETDIni),'')AS SemETDIni,  ''as FechaEDT1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,   	           
+	  ISNULL(ad.UltimoETD,'')AS UltimoETD,             ISNULL(Datepart(Week,ad.UltimoETD),'')AS SemETDReal,  ISNULL( DATEDIFF(WEEK,ad.UltimoETD,a.FechaContrato),'')AS LtETDReal,
+	  ''AS CumpETD ,       ISNULL(DATEDIFF(DAY,ad.UltimoETD,a.FechaETDIni),'')AS DifDiasETD,ISNULL(a.FechaBL,' ')AS FechaBL , 
+	  ISNULL(a.FechaETAIni,0)AS ETAInicial,          ''as ETA1,''as ETA2,''as ETA3,''as ETA4,      ISNULL(A.FechaETA,'')AS UltimoETA  ,ISNULL( DATEDIFF(WEEK,a.FechaETA,A.FechaETAIni),'')AS NVariacion, 
+	  ISNULL(DATEPART(WEEK,a.FechaETA),'')AS SemETAReal, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaContrato),'')AS LtETAReal, 
+	  ''AS CumpETASem, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaETAIni),0)AS DifDiasETA,
       ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion, ISNULL(a.FechaIngAlmIni,0)AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,                 ISNULL(g.PuertoDestino+e.TipoCarga ,'')AS Concantenar,
-	  ''AS TIngreso,''AS FechaIngAlmEstFin,''AS DifDiasIng, '' AS SemanaIng,  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm, ''AS DiasETDProm, ''AS DiasETAProm,''AS DiasIngAlmProm, ''AS DiasETDReal,
-	  ''AS DiasETAReal,'' AS DiasIngAlmReal, ''AS LeadTimeEst, ''AS LeadTimeReal,''AS PVariacion ,''AS CumpIngreso, ''AS CumpLeadTime ,
+	  ''AS TIngreso,                 ''AS FechaIngAlmEstFin,''AS DifDiasIng,
+	  '' AS SemanaIng,  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm, ''AS DiasETDProm, ''AS DiasETAProm,''AS DiasIngAlmProm, ''AS DiasETDReal,''AS DiasETAReal,'' AS DiasIngAlmReal,
+	  ''AS LeadTimeEst, ''AS LeadTimeReal,''AS PVariacion ,''AS CumpIngreso, ''AS CumpLeadTime ,
 	  ISNULL(a.CodigoImportacion,'')AS CodigoOC,     ISNULL(a.OCompraSG,'')AS OC,                  ISNULL(a.OCEstatus,'')AS EstatusOC,                   ''AS NCompra, ''AS MDemora, ''AS Coment ,
 	  ISNULL(b.Estado,'')AS EstProd
 
@@ -57,7 +59,3 @@ Select
 	           left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion )
                ) AS ad on a.CodigoImportacion = ad.CodigoImportacion
 	             left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
-   Where YEAR(a.FechaETD) = 2021
-   order by a.FechaContrato DESC
-
-  

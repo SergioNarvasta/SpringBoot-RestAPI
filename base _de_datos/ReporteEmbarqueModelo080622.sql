@@ -1,21 +1,28 @@
 
 use EQUILIBRA_V17
+Declare @TIngreso Int
+SET @TIngreso =(SELECT top 1(Case When e.TipoCarga='CONTENEDORES'Then 4 When e.TipoCarga='GRANEL' Then 3 When g.PuertoDestino+e.TipoCarga='CALLAOBREAKBULK' Then 10 Else 0 End) FROM CEX_TipoCarga e,Cex_PuertoDestino g )
+Declare @FechaIngAlmEstFin Datetime
+SET @FechaIngAlmEstFin = (SELECT TOP 1 a.FechaETA FROM CEX_Importacion a)
 Select 
       ISNULL(YEAR(a.FechaETA),'')AS Año,               d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
-	  ISNULL(C.ProveedorCEX,' ')AS Proveedor    ,      ISNULL(z.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
+	  ISNULL(C.ProveedorCEX,' ')AS Proveedor    ,      ISNULL(E.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
 	  ISNULL(t.Marca,' ')AS Marca,                     ISNULL(CantidadTM,0)AS CantidadTM,          ISNULL(J.Incoterm,' ')AS Incoterm ,                   ISNULL(a.PrecioUSDTM,0)AS PrecioUSDTM	 ,  
 	  ISNULL(x.AlmacenDestino,' ')AS AlmacenDestino,   ISNULL(f.PuertoOrigen,' ') as PuertoOrigen, ISNULL(v.PAI_NOMCOR,'')AS PaisOrigen,                 ISNULL(g.PuertoDestino,'')AS PuertoLlegada,
 	  ISNULL(a.NaveDestino ,'')AS NaveDestino,         ISNULL(a.BL,' ')AS BL,                      ISNULL(l.Naviera,'')AS Naviera,                       ISNULL(a.IdClasificacionCEX,' ')AS Clase,
 	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            ISNULL(a.FechaContrato,' ')AS FechaContrato,ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
-	  ISNULL(Datepart(Week,a.FechaETDIni),'')AS SemETDIni,                                         ''as FechaEDT1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,   	           
+	  ISNULL(Datepart(Week,a.FechaETDIni),'')AS SemETDIni,  ''as FechaEDT1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,   	           
 	  ISNULL(ad.UltimoETD,'')AS UltimoETD,             ISNULL(Datepart(Week,ad.UltimoETD),'')AS SemETDReal,  ISNULL( DATEDIFF(WEEK,ad.UltimoETD,a.FechaContrato),'')AS LtETDReal,
-	  (Case When ad.UltimoETD <= a.FechaETDIni Then 'VERDADERO' Else 'FALSO'End)AS CumpETD ,       ISNULL(DATEDIFF(DAY,ad.UltimoETD,a.FechaETDIni),'')AS DifDiasETD   ,ISNULL(a.FechaBL,' ')AS FechaBL , 
+	  (Case When ad.UltimoETD <= a.FechaETDIni Then 'VERDADERO' Else 'FALSO'End)AS CumpETD ,       ISNULL(DATEDIFF(DAY,ad.UltimoETD,a.FechaETDIni),'')AS DifDiasETD,ISNULL(a.FechaBL,' ')AS FechaBL , 
 	  ISNULL(a.FechaETAIni,0)AS ETAInicial,          ''as ETA1,''as ETA2,''as ETA3,''as ETA4,      ISNULL(A.FechaETA,'')AS UltimoETA  ,ISNULL( DATEDIFF(WEEK,a.FechaETA,A.FechaETAIni),'')AS NVariacion, 
 	  ISNULL(DATEPART(WEEK,a.FechaETA),'')AS SemETAReal, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaContrato),'')AS LtETAReal, 
-	  (Case When DATEDIFF(DAY,a.FechaETA,a.FechaETAIni)<=3 Then 'VERDADERO' Else 'FALSO'End )AS CumpETASem, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaETAIni),'')AS DifDiasETA,
-      ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion, ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,                 ISNULL(g.PuertoDestino+z.TipoCarga ,'')AS Concantenar,
-	  ISNULL(a.FechaIngAlm,'')AS FechaIngAlmEstFin  
-	 
+	  (Case When DATEDIFF(DAY,a.FechaETA,a.FechaETAIni)<=3 Then 'VERDADERO' Else 'FALSO'End )AS CumpETASem, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaETAIni),0)AS DifDiasETA,
+      ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion, ISNULL(a.FechaIngAlmIni,0)AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,                 ISNULL(g.PuertoDestino+e.TipoCarga ,'')AS Concantenar,
+	  ISNULL(@TIngreso,0)AS TIngreso,                 ISNULL(a.FechaETA+@TIngreso,0)AS FechaIngAlmEstFin,ISNULL(DATEDIFF(DAY,A.FechaIngAlmIni,@FechaIngAlmEstFin),0)AS DifDiasIng,
+	  ISNULL(DATEPART(WEEK,@FechaIngAlmEstFin),0)AS SemanaIng,  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm, ''AS DiasETDProm, ''AS DiasETAProm,''AS DiasIngAlmProm, ''AS DiasETDReal,''AS DiasETAReal,'' AS DiasIngAlmReal,
+	  ''AS LeadTimeEst, ''AS LeadTimeReal,''AS PVariacion ,ISNULL((Case When DATEDIFF(DAY,A.FechaIngAlmIni,@FechaIngAlmEstFin)<=7 Then'VERDADERO' Else 'FALSO' End),0)AS CumpIngreso, ''AS CumpLeadTime ,
+	  ISNULL(a.CodigoImportacion,'')AS CodigoOC,     ISNULL(a.OCompraSG,'')AS OC,                  ISNULL(a.OCEstatus,'')AS EstatusOC,                   ''AS NCompra, ''AS MDemora, ''AS Coment ,
+	  ISNULL(b.Estado,'')AS EstProd
 
 	From CEX_Importacion A
 	Left Join Cex_ProductoCEX B on A.IdProductoCEX=B.IdProductoCEX
@@ -43,7 +50,6 @@ Select
 	Left Join CEX_TerminalMar W on a.IdTerminalMar=w.IdTerminalMar
 	Left Join CEX_AlmacenDestino X on a.IdAlmacenDestino=x.IdAlmacenDestino
 	left join CEX_ConfirmaFecha Y on a.IdConfirmaAlm = y.IdConfirmaFecha   
-	left join CEX_TipoCarga Z on a.IdTipoCarga = z.IdTipoCarga
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
 	left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia
 	left join (Select a.CodigoImportacion,b.IdImportacion,b.NroSec, b.FechaETD ,  
@@ -52,8 +58,9 @@ Select
 	           left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion )
                ) AS ad on a.CodigoImportacion = ad.CodigoImportacion
 	             left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
-    --here a.FechaContrato between 1900 and 2022
-   order by a.FechaContrato 
+   Where YEAR(a.FechaETD) = 2021
+   order by a.FechaContrato DESC
+  
 
    
 

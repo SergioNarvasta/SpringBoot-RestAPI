@@ -1,6 +1,5 @@
 
 use EQUILIBRA_V17
---select*from CEX_ImportacionING
 Select 
       ISNULL(YEAR(a.FechaETA),'')AS Año,               d.Seguimiento AS Estatus,                   ISNULL(a.CodAnt,' ')AS MF ,                           ISNULL(B.ProductoCEX,' ')AS Producto, 
 	  ISNULL(C.ProveedorCEX,' ')AS Proveedor    ,      ISNULL(z.TipoCarga,' ')AS TipoCarga,        ISNULL(ab.PresentacionCEX,' ')AS Presentacion,        ISNULL(a.PesoBBTM,0)AS PesoBBTM,
@@ -8,13 +7,15 @@ Select
 	  ISNULL(x.AlmacenDestino,' ')AS AlmacenDestino,   ISNULL(f.PuertoOrigen,' ') as PuertoOrigen, ISNULL(v.PAI_NOMCOR,'')AS PaisOrigen,                 ISNULL(g.PuertoDestino,'')AS PuertoLlegada,
 	  ISNULL(a.NaveDestino ,'')AS NaveDestino,         ISNULL(a.BL,' ')AS BL,                      ISNULL(l.Naviera,'')AS Naviera,                       ISNULL(a.IdClasificacionCEX,' ')AS Clase,
 	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            ISNULL(a.FechaContrato,' ')AS FechaContrato,ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,ISNULL(a.FechaETDIni,0)AS ETDInicial,
-	  ISNULL(DATEPART(WEEK,a.FechaETDIni),'')AS SemETDIni,ISNULL(ad.FechaETD,'') AS FechaETD1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,              '' as UltimoETD,
-	  
+	  ISNULL(Datepart(Week,a.FechaETDIni),'')AS SemETDIni,                                         ''as FechaEDT1,''as FechaEDT2,''as FechaEDT3,''as FechaEDT4,   	           
+	  ISNULL(ad.UltimoETD,'')AS UltimoETD,             ISNULL(Datepart(Week,ad.UltimoETD),'')AS SemETDReal,  ISNULL( DATEDIFF(WEEK,ad.UltimoETD,a.FechaContrato),'')AS LtETDReal,
+	  (Case When ad.UltimoETD <= a.FechaETDIni Then 'VERDADERO' Else 'FALSO'End)AS CumpETD ,       ISNULL(DATEDIFF(DAY,ad.UltimoETD,a.FechaETDIni),'')AS DifDiasETD   ,ISNULL(a.FechaBL,' ')AS FechaBL , 
+	  ISNULL(a.FechaETAIni,0)AS ETAInicial,          ''as ETA1,''as ETA2,''as ETA3,''as ETA4,      ISNULL(A.FechaETA,'')AS UltimoETA  ,ISNULL( DATEDIFF(WEEK,a.FechaETA,A.FechaETAIni),'')AS NVariacion, 
+	  ISNULL(DATEPART(WEEK,a.FechaETA),'')AS SemETAReal, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaContrato),'')AS LtETAReal, 
+	  (Case When DATEDIFF(DAY,a.FechaETA,a.FechaETAIni)<=3 Then 'VERDADERO' Else 'FALSO'End )AS CumpETASem, ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaETAIni),'')AS DifDiasETA,
+      ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion, ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,                 ISNULL(g.PuertoDestino+z.TipoCarga ,'')AS Concantenar,
+	  ISNULL(a.FechaIngAlm,'')AS FechaIngAlmEstFin  
 	 
-	 
-	
-	  ISNULL(a.BLFecha,' ')AS BLFecha,                ISNULL(a.FechaETAIni,0)AS ETAInicial,        ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion,
-	  ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni,ISNULL(e.TipoCarga,'')AS TipoCarga,         ISNULL(g.PuertoDestino +z.TipoCarga ,'')AS Concantenar,a.FechaETD,a.FechaETDIni,ac.fechaING
 
 	From CEX_Importacion A
 	Left Join Cex_ProductoCEX B on A.IdProductoCEX=B.IdProductoCEX
@@ -45,8 +46,14 @@ Select
 	left join CEX_TipoCarga Z on a.IdTipoCarga = z.IdTipoCarga
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
 	left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia
-	left join CEX_ImportacionETD ad on (a.cia_codcia = ad.cia_codcia and a.IdImportacion = ad.IdImportacion )
-	left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
-   order by Año desc
+	left join (Select a.CodigoImportacion,b.IdImportacion,b.NroSec, b.FechaETD ,  
+	              (SELECT top 1 b.FechaETD FROM CEX_ImportacionETD order by b.NroSec desc)AS UltimoETD       
+               From CEX_Importacion A
+	           left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion )
+               ) AS ad on a.CodigoImportacion = ad.CodigoImportacion
+	             left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
+    --here a.FechaContrato between 1900 and 2022
+   order by a.FechaContrato 
 
+   
 

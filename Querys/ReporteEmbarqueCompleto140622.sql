@@ -1,6 +1,6 @@
 
 use EQUILIBRA_V17
-
+  --MODIFICADO 130622
 Select
       ISNULL(YEAR(a.FechaETA),'')AS Año,               
 	  d.Seguimiento AS Estatus,                   

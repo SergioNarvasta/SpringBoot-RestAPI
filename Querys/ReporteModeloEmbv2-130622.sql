@@ -1,8 +1,4 @@
 
---Declare @TIngreso Int
---SET @TIngreso =(SELECT top 1(Case When e.TipoCarga='CONTENEDORES'Then 4 When e.TipoCarga='GRANEL' Then 3 When g.PuertoDestino+e.TipoCarga='CALLAOBREAKBULK' Then 10 Else 0 End) FROM CEX_TipoCarga e,Cex_PuertoDestino g )
---Declare @FechaIngAlmEstFin Datetime
---SET @FechaIngAlmEstFin = (SELECT TOP 1 a.FechaETA FROM CEX_Importacion a)
 SELECT
       ISNULL(YEAR(a.FechaETA),'')AS Año,             
 	  d.Seguimiento AS Estatus,                  
@@ -29,39 +25,44 @@ SELECT
 	  ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,
 	  ISNULL(miETD.FechaETD,0)AS ETDInicial,
 	  ISNULL(Datepart(Week,miETD.FechaETD),'')AS SemETDIni,  
-	  Space(5)as FechaEDT1,Space(5)as FechaEDT2,Space(5)as FechaEDT3,Space(5)as FechaEDT4,   	           
+	  Space(5)as FechaETD1,Space(5)as FechaETD2,Space(5)as FechaETD3,Space(5)as FechaETD4,   	           
 	  ISNULL(maETD.FechaETD,'')AS UltimoETD,            
 	  ISNULL(Datepart(Week,maETD.FechaETD),'')AS SemETDReal, 
-	  ISNULL( DATEDIFF(WEEK,maETD.FechaETD,a.FechaContrato),'')AS LtETDReal,
+	  ISNULL( DATEDIFF(WEEK,a.FechaContrato,maETD.FechaETD),0)AS LtETDReal,
 	  (Case When maETD.FechaETD <= miETD.FechaETD Then 'VERDADERO' Else 'FALSO'End)AS CumpETD ,       
-	  ISNULL(DATEDIFF(DAY,maETD.FechaETD,miETD.FechaETD),'')AS DifDiasETD,
+	  ISNULL(DATEDIFF(DAY,miETD.FechaETD,maETD.FechaETD),'')AS DifDiasETD,
 	  ISNULL(a.FechaBL,' ')AS FechaBL , 
 	  ISNULL(miETA.fechaETA,0)AS ETAInicial,          
 	  Space(5)as ETA1,Space(5)as ETA2,Space(5)as ETA3,Space(5)as ETA4,      
 	  ISNULL(maETA.fechaETA,'')AS UltimoETA,
-	  ISNULL( DATEDIFF(WEEK,maETA.FechaETA,miETA.fechaETA),'')AS NVariacion, 
+	  ISNULL( DATEDIFF(WEEK,miETA.fechaETA,maETA.FechaETA),'')AS NVariacion, 
 	  ISNULL(DATEPART(WEEK,maETA.fechaETA),'')AS SemETAReal,
-	  ISNULL(DATEDIFF(DAY,maETA.FechaETA,a.FechaContrato),'')AS LtETAReal, 
+	  ISNULL(DATEDIFF(DAY,a.FechaContrato,maETA.FechaETA),'')AS LtETAReal, 
 	  (Case When DATEDIFF(DAY,maETA.FechaETA,miETA.fechaETA)<=3 Then 'VERDADERO' Else 'FALSO'End )AS CumpETASem , 
-	  ISNULL(DATEDIFF(DAY,maETA.FechaETA,miETA.fechaETA),0)AS DifDiasETA,
+	  ISNULL(DATEDIFF(DAY,miETA.fechaETA,maETA.FechaETA),0)AS DifDiasETA,
       ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion,
-	  Space(5)AS FechaIngAlmEstIni,
+	  ISNULL(a.FechaIngAlmIni,'')AS FechaIngAlmEstIni,
 	  ISNULL(e.TipoCarga,'')AS TipoCarga,                 
 	  ISNULL(g.PuertoDestino+e.TipoCarga ,'')AS Concatenar,
 	  ISNULL(TIng.Num,0)AS TIngreso ,
-	  Space(5)AS FechaIngAlmEstFin,Space(5)AS DifDiasIng,
-	  Space(5)AS SemanaIng,  
+	  ISNULL(DATEADD(DAY,TIng.Num,maETA.fechaETA),'')AS FechaIngAlmEstFin,
+	  ISNULL((DATEDIFF(DAY,a.FechaIngAlmIni,DATEADD(DAY,TIng.Num,maETA.fechaETA))),'')AS DifDiasIng,
+	  ISNULL(DATEPART(WEEK,DATEADD(DAY,TIng.Num,maETA.fechaETA)),0) SemanaIng,  
 	  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm,
 	  Space(5)AS DiasETDProm, Space(5)AS DiasETAProm,Space(5)AS DiasIngAlmProm,
-	  Space(5)AS DiasETDReal,Space(5)AS DiasETAReal,'' AS DiasIngAlmReal,
-	  Space(5)AS LeadTimeEst,Space(5)AS LeadTimeReal,Space(5)AS PVariacion ,
+	  ISNULL(DATEDIFF(DAY,a.FechaContrato,maETD.FechaETD),0)AS DiasETDReal,
+	  ISNULL(DATEDIFF(DAY,maETD.FechaETD,maETA.fechaETA),0)AS DiasETAReal,
+	  ISNULL(TIng.Num,0) AS DiasIngAlmReal,
+	  Space(5)AS LeadTimeEst,
+	  (DATEDIFF(DAY,a.FechaContrato,maETD.FechaETD)+DATEDIFF(DAY,maETD.FechaETD,maETA.fechaETA)+TIng.Num)AS LeadTimeReal,
+	  Space(5)AS PVariacion ,
 	  (Case When maETA.FechaETA=miETA.fechaETA Then 'VERDADERO'Else 'FALSO' End)AS CumpIngreso,
 	  Space(5)AS CumpLeadTime ,
-	  ISNULL(a.CodigoImportacion,'')AS CodigoOC,     
+	  ISNULL(a.IdImportacion,'')AS CodigoOC,     
 	  ISNULL(a.OCompraSG,'')AS OC,                    
 	  ISNULL(a.OCEstatus,'')AS EstatusOC,                  
 	  Space(5)AS NCompra,Space(5)AS MDemora,Space(5)AS Coment ,
-	  ISNULL(b.Estado,'')AS EstProd
+	  ISNULL(prd.prd_estado,'')AS EstProd
 
 	From CEX_Importacion A
 	Left Join Cex_ProductoCEX B on A.IdProductoCEX=B.IdProductoCEX
@@ -110,4 +111,3 @@ SELECT
 
 
 	order by Año desc
-	

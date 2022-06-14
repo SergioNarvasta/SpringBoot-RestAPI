@@ -27,33 +27,36 @@ SELECT
 	  ISNULL(a.MesEmbProg,'')AS MesEmbProg,            
 	  ISNULL(a.FechaContrato,' ')AS FechaContrato,
 	  ISNULL(DATEPART(WEEK,a.FechaContrato),0)AS SemContrato,
-	  ISNULL(a.FechaETDIni,0)AS ETDInicial,
-	  ISNULL(Datepart(Week,a.FechaETDIni),'')AS SemETDIni,  
+	  ISNULL(miETD.FechaETD,0)AS ETDInicial,
+	  ISNULL(Datepart(Week,miETD.FechaETD),'')AS SemETDIni,  
 	  Space(5)as FechaEDT1,Space(5)as FechaEDT2,Space(5)as FechaEDT3,Space(5)as FechaEDT4,   	           
-	  ISNULL(ETD.FechaETD,'')AS UltimoETD,            
-	  ISNULL(Datepart(Week,ETD.FechaETD),'')AS SemETDReal, 
-	  ISNULL( DATEDIFF(WEEK,ETD.FechaETD,a.FechaContrato),'')AS LtETDReal,
-	  Space(5)AS CumpETD ,       
-	  ISNULL(DATEDIFF(DAY,ETD.FechaETD,a.FechaETDIni),'')AS DifDiasETD,
+	  ISNULL(maETD.FechaETD,'')AS UltimoETD,            
+	  ISNULL(Datepart(Week,maETD.FechaETD),'')AS SemETDReal, 
+	  ISNULL( DATEDIFF(WEEK,maETD.FechaETD,a.FechaContrato),'')AS LtETDReal,
+	  (Case When maETD.FechaETD <= miETD.FechaETD Then 'VERDADERO' Else 'FALSO'End)AS CumpETD ,       
+	  ISNULL(DATEDIFF(DAY,maETD.FechaETD,miETD.FechaETD),'')AS DifDiasETD,
 	  ISNULL(a.FechaBL,' ')AS FechaBL , 
-	  ISNULL(a.FechaETAIni,0)AS ETAInicial,          
+	  ISNULL(miETA.fechaETA,0)AS ETAInicial,          
 	  Space(5)as ETA1,Space(5)as ETA2,Space(5)as ETA3,Space(5)as ETA4,      
-	  ISNULL(A.FechaETA,'')AS UltimoETA,
-	  ISNULL( DATEDIFF(WEEK,a.FechaETA,A.FechaETAIni),'')AS NVariacion, 
-	  ISNULL(DATEPART(WEEK,a.FechaETA),'')AS SemETAReal,
-	  ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaContrato),'')AS LtETAReal, 
-	  Space(5)AS CumpETASem, 
-	  ISNULL(DATEDIFF(DAY,a.FechaETA,a.FechaETAIni),0)AS DifDiasETA,
+	  ISNULL(maETA.fechaETA,'')AS UltimoETA,
+	  ISNULL( DATEDIFF(WEEK,maETA.FechaETA,miETA.fechaETA),'')AS NVariacion, 
+	  ISNULL(DATEPART(WEEK,maETA.fechaETA),'')AS SemETAReal,
+	  ISNULL(DATEDIFF(DAY,maETA.FechaETA,a.FechaContrato),'')AS LtETAReal, 
+	  (Case When DATEDIFF(DAY,maETA.FechaETA,miETA.fechaETA)<=3 Then 'VERDADERO' Else 'FALSO'End )AS CumpETASem , 
+	  ISNULL(DATEDIFF(DAY,maETA.FechaETA,miETA.fechaETA),0)AS DifDiasETA,
       ISNULL(y.ConfirmaFecha,' ')AS TipoConfirmacion,
-	  ISNULL(a.FechaIngAlmIni,0)AS FechaIngAlmEstIni,
+	  Space(5)AS FechaIngAlmEstIni,
 	  ISNULL(e.TipoCarga,'')AS TipoCarga,                 
-	  ISNULL(g.PuertoDestino+e.TipoCarga ,'')AS Concantenar,
-	  Space(5)AS TIngreso,Space(5)AS FechaIngAlmEstFin,Space(5)AS DifDiasIng,
-	  Space(5)AS SemanaIng,  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm,
+	  ISNULL(g.PuertoDestino+e.TipoCarga ,'')AS Concatenar,
+	  ISNULL(TIng.Num,0)AS TIngreso ,
+	  Space(5)AS FechaIngAlmEstFin,Space(5)AS DifDiasIng,
+	  Space(5)AS SemanaIng,  
+	  ISNULL(a.FechaIngAlm,0)AS FechaFinIngAlm,
 	  Space(5)AS DiasETDProm, Space(5)AS DiasETAProm,Space(5)AS DiasIngAlmProm,
 	  Space(5)AS DiasETDReal,Space(5)AS DiasETAReal,'' AS DiasIngAlmReal,
 	  Space(5)AS LeadTimeEst,Space(5)AS LeadTimeReal,Space(5)AS PVariacion ,
-	  Space(5)AS CumpIngreso,Space(5)AS CumpLeadTime ,
+	  (Case When maETA.FechaETA=miETA.fechaETA Then 'VERDADERO'Else 'FALSO' End)AS CumpIngreso,
+	  Space(5)AS CumpLeadTime ,
 	  ISNULL(a.CodigoImportacion,'')AS CodigoOC,     
 	  ISNULL(a.OCompraSG,'')AS OC,                    
 	  ISNULL(a.OCEstatus,'')AS EstatusOC,                  
@@ -87,8 +90,24 @@ SELECT
 	Left Join CEX_AlmacenDestino X on a.IdAlmacenDestino=x.IdAlmacenDestino
 	left join CEX_ConfirmaFecha Y on a.IdConfirmaAlm = y.IdConfirmaFecha   
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
-	Left Join (Select cia_codcia, idimportacion, max(nrosec) as maxsec,min(NroSec)as minsec from CEX_ImportacionETD group by cia_codcia, idimportacion ) as maxETD on (a.cia_codcia=maxETD.cia_codcia and a.IdImportacion=maxETD.IdImportacion)
-	Left Join CEX_ImportacionETD as ETD on a.cia_codcia=ETD.cia_codcia and a.IdImportacion=ETD.IdImportacion and maxETD.maxsec=ETD.NroSec
+	
+	Left Join (Select cia_codcia, idimportacion, max(nrosec) as maxsec,min(NroSec)as minsec from CEX_ImportacionETD group by cia_codcia, idimportacion ) as dETD on (a.cia_codcia=dETD.cia_codcia and a.IdImportacion=dETD.IdImportacion)
+	Left Join CEX_ImportacionETD as maETD on a.cia_codcia=maETD.cia_codcia and a.IdImportacion=maETD.IdImportacion and dETD.maxsec=maETD.NroSec
+	Left Join CEX_ImportacionETD as miETD on a.cia_codcia=miETD.cia_codcia and a.IdImportacion=miETD.IdImportacion and dETD.maxsec= miETD.NroSec
+	
+	Left Join (Select cia_codcia, idimportacion, max(nrosec) as maxsec,min(NroSec)as minsec from CEX_ImportacionETA group by cia_codcia, idimportacion ) as dETA on (a.cia_codcia=dETA.cia_codcia and a.IdImportacion=dETA.IdImportacion)
+	Left Join CEX_ImportacionETA as miETA on a.cia_codcia=miETA.cia_codcia and a.IdImportacion=miETA.IdImportacion and dETA.minsec=miETA.NroSec
+	Left Join CEX_ImportacionETA as maETA on a.cia_codcia=maETA.cia_codcia and a.IdImportacion=maETA.IdImportacion and dETA.maxsec=maETA.NroSec
+	
+	Left Join (Select e.IdTipoCarga,g.IdPuertoDestino ,(Case When e.TipoCarga Like 'Contenedor %' Then 4 When e.TipoCarga Like '%Granel%' Then 2 
+	            When e.TipoCarga Like '%Breakbulk%' and g.PuertoDestino = '%Callao%'Then 10
+			    When e.TipoCarga Like '%Breakbulk%' and g.PuertoDestino = '%Paita%'Then 7
+			    Else 0 End)AS Num
+			  FROM CEX_TipoCarga e, CEX_PuertoDestino g )AS TIng ON a.IdTipoCarga=TIng.IdTipoCarga and a.IdPuertoDestino=TIng.IdPuertoDestino
+	
+
+
+
+
 	order by Año desc
-	--left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia and a.IdImportacion = ac.IdImportacion
-    --left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia and a.IdImportacion = ae.IdImportacion
+	

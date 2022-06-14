@@ -1,6 +1,4 @@
 
-
-
 --Declare @TIngreso Int
 --SET @TIngreso =(SELECT top 1(Case When e.TipoCarga='CONTENEDORES'Then 4 When e.TipoCarga='GRANEL' Then 3 When g.PuertoDestino+e.TipoCarga='CALLAOBREAKBULK' Then 10 Else 0 End) FROM CEX_TipoCarga e,Cex_PuertoDestino g )
 --Declare @FechaIngAlmEstFin Datetime
@@ -89,7 +87,8 @@ SELECT
 	Left Join CEX_AlmacenDestino X on a.IdAlmacenDestino=x.IdAlmacenDestino
 	left join CEX_ConfirmaFecha Y on a.IdConfirmaAlm = y.IdConfirmaFecha   
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
-	Left Join (	Select cia_codcia, idimportacion, max(nrosec) as maxsec from CEX_ImportacionETD group by cia_codcia, idimportacion ) as maxETD on (a.cia_codcia=maxETD.cia_codcia and a.IdImportacion=maxETD.IdImportacion)
+	Left Join (Select cia_codcia, idimportacion, max(nrosec) as maxsec,min(NroSec)as minsec from CEX_ImportacionETD group by cia_codcia, idimportacion ) as maxETD on (a.cia_codcia=maxETD.cia_codcia and a.IdImportacion=maxETD.IdImportacion)
 	Left Join CEX_ImportacionETD as ETD on a.cia_codcia=ETD.cia_codcia and a.IdImportacion=ETD.IdImportacion and maxETD.maxsec=ETD.NroSec
-	left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia and a.IdImportacion = ac.IdImportacion
-    left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia and a.IdImportacion = ae.IdImportacion
+	order by Año desc
+	--left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia and a.IdImportacion = ac.IdImportacion
+    --left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia and a.IdImportacion = ae.IdImportacion

@@ -49,12 +49,8 @@ Select
 	left join CEX_ConfirmaFecha Y on a.IdConfirmaAlm = y.IdConfirmaFecha   
 	left join CEX_PresentacionCEX ab on a.IdPresentacion = ab.IdPresentacionCEX
 	left join CEX_ImportacionING ac on a.cia_codcia = ac.cia_codcia
-	left join (Select a.CodigoImportacion,b.IdImportacion,b.NroSec, b.FechaETD ,  
-	              (SELECT top 1 b.FechaETD FROM CEX_ImportacionETD order by b.NroSec desc)AS UltimoETD       
-               From CEX_Importacion A
-	           left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion )
-               ) AS ad on a.CodigoImportacion = ad.CodigoImportacion
-	             left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
+	left join CEX_ImportacionETD ad on (a.cia_codcia = ad.cia_codcia and a.IdImportacion = ad.IdImportacion )
+    left join CEX_ImportacionETA ae on a.cia_codcia = ae.cia_codcia
    Where YEAR(a.FechaETD) = 2021
    order by a.FechaContrato DESC
 

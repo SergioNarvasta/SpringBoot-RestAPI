@@ -1,27 +1,10 @@
 
 
-Select 
-   a.CodigoImportacion,b.IdImportacion,b.NroSec, b.FechaETD          
-From CEX_Importacion A
-	left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion )
-Where YEAR(b.FechaETD)>=2022 and a.CodigoImportacion ='MF06500022' 
-Order by a.CodigoImportacion,b.NroSec desc
-go
 
-Select 
-   a.CodigoImportacion,b.IdImportacion,
-   (Case When b.NroSec=7 Then b.FechaETD End)AS Fecha7,
-   (Case When b.NroSec=6 Then b.FechaETD End)AS Fecha6,
-   (Case When b.NroSec=5 Then b.FechaETD End)AS Fecha5,
-   (Case When b.NroSec=4 Then b.FechaETD End)AS Fecha4,
-   (Case When b.NroSec=3 Then b.FechaETD End)AS Fecha3,
-   (Case When b.NroSec=2 Then b.FechaETD End)AS Fecha2,
-   (Case When b.NroSec=1 Then b.FechaETD End)AS Fecha1  
-From CEX_Importacion A left join CEX_ImportacionETD b on (a.cia_codcia = b.cia_codcia and a.IdImportacion = b.IdImportacion)	
 --Where YEAR(b.FechaETD)>=2022 and a.CodigoImportacion ='MF06500022' 
 --group by a.CodigoImportacion,b.IdImportacion
 --group by b.FechaETD,b.NroSec
-order by a.CodigoImportacion
+
 
 Select a.CodigoImportacion, ETD.Fecha7,ETD.Fecha6,ETD.Fecha5,ETD.Fecha4,ETD.Fecha3,ETD.Fecha2,ETD.Fecha1
 From CEX_Importacion A left join (
@@ -39,7 +22,7 @@ group by a.CodigoImportacion,ETD.Fecha7,ETD.Fecha6,ETD.Fecha5,ETD.Fecha4,ETD.Fec
 
 
 go
-(SELECT cia_codcia,IdImportacion,count(NroSec)AS cant FROM CEX_ImportacionETD group by cia_codcia,IdImportacion)
+--(SELECT cia_codcia,IdImportacion,count(NroSec)AS cant FROM CEX_ImportacionETD group by cia_codcia,IdImportacion)
 --left join AS cETD ON (a.cia_codcia=cETD.cia_codcia and a.IdImportacion=cETD.IdImportacion)
 
 

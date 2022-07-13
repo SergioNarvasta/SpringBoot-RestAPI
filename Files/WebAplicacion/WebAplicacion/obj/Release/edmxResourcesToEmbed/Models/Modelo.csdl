@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="WebAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="WebAppEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Menus_men" EntityType="WebAppModel.Menus_men" />
+    <AssociationSet Name="FK_Menus_men_Menus_men" Association="WebAppModel.FK_Menus_men_Menus_men">
+      <End Role="Menus_men" EntitySet="Menus_men" />
+      <End Role="Menus_men1" EntitySet="Menus_men" />
+    </AssociationSet>
+    <EntitySet Name="Productos_prd" EntityType="WebAppModel.Productos_prd" />
+  </EntityContainer>
+  <EntityType Name="Menus_men">
+    <Key>
+      <PropertyRef Name="men_codmen" />
+    </Key>
+    <Property Name="men_codmen" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="men_nommen" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+    <Property Name="men_padmen" Type="Int32" />
+    <NavigationProperty Name="Menus_men1" Relationship="WebAppModel.FK_Menus_men_Menus_men" FromRole="Menus_men" ToRole="Menus_men1" />
+    <NavigationProperty Name="Menus_men2" Relationship="WebAppModel.FK_Menus_men_Menus_men" FromRole="Menus_men1" ToRole="Menus_men" />
+  </EntityType>
+  <Association Name="FK_Menus_men_Menus_men">
+    <End Type="WebAppModel.Menus_men" Role="Menus_men" Multiplicity="0..1" />
+    <End Type="WebAppModel.Menus_men" Role="Menus_men1" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Menus_men">
+        <PropertyRef Name="men_codmen" />
+      </Principal>
+      <Dependent Role="Menus_men1">
+        <PropertyRef Name="men_padmen" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Productos_prd">
+    <Key>
+      <PropertyRef Name="prd_codprd" />
+    </Key>
+    <Property Name="prd_codprd" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="prd_nomprd" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="prd_canprd" Type="Int32" />
+  </EntityType>
+</Schema>

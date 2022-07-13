@@ -1,0 +1,54 @@
+<html><head>
+    <style>table {width:100%;}table, th, td {border: 1px solid black; border-collapse: collapse; font: 11px arial;} 
+    table th { background-color: #154da0; color: white;height:28px; } .ctnd {border: 2px solid #c1b8b8;border-left: 6px solid #154da0;background-color: white; padding-left: 6px;padding-right: 6px;font-size: 16px;margin-top: 10px;}.imag{width:100%;margin-top: 10px;} .titcont{text-align: center;}</style>
+    </head>
+    <body>
+    <h2><center><u style='color: darkblue;'>GRAFICOS ESTADISTICOS - HDSOFT</u>		</center></h1>
+    <div class='ctnd'>
+    <p><b style='color: darkblue;'>Estimado Vendedor: </b> Cocodrillo</p>
+    <p style='font-style: italic;'>Mediante este correo le enviamos las graficas estadisticas.</p>
+    <p style='color: red;'><b>NOTA:</b> Deberán generar una nueva.</p>
+    </div>
+    <div class='ctnd' >
+    <p class="titcont"><b style='color: darkblue;'>Grafico de Linea - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdLinea" class="imag">
+    </p>
+    </div>
+    
+    <div class='ctnd'>
+    <p class="titcont"><b style='color: darkblue;'>Grafico de Columna - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdColumna" class="imag">
+    
+    </p>
+    </div>
+    
+    <div class='ctnd'>
+    <p class="titcont"><b style='color: darkblue;'>Grafico Circular - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdCircular" class="imag">
+    
+    </p>
+    </div>
+    
+    <div class='ctnd'>
+    <p class="titcont"><b style='color: darkblue;'>Grafico Histograma - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdHistograma" class="imag">
+    
+    </p>
+    </div>
+    
+    <div class='ctnd'>
+    <p class="titcont"><b style='color: darkblue;'>Grafico de Barra - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdBarra" class="imag">
+    
+    </p>
+    </div>
+    
+    <div class='ctnd'>
+    <p class="titcont"><b style='color: darkblue;'>Grafico de Dispersion - </b>Productos<br>
+    	<img src="pic_trulli.jpg" id="IdDispersion" class="imag">
+    
+    </p>
+    </div>
+  
+  </body>
+  </html>

@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="chart_div"></div>
+<br />
+<br />
+<div id="creativeCommons" style="text-align: center; width: 400px;"> </div>
+@section scripts{
+
+    <script>
+        google.load("visualization", "1", { packages: ["corechart"] });
+        google.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Name');
+            data.addColumn('number', 'Value');
+            data.addColumn({ type: 'string', role: 'annotation' });
+
+            //data.addRows([
+            //    ['Foo', 53, 'Foo text'],
+            //    ['Bar', 71, 'Bar text'],
+            //    ['Baz', 36, 'Baz text'],
+            //    ['Cad', 42, 'Cad text'],
+            //    ['Qud', 87, 'Qud text'],
+            //    ['Pif', 64, 'Pif text']
+            //]);
+            var nom = "oro";
+            var val = 20;
+
+            for (var i = 0; i < 5; i++) {
+                data.addRows([[nom, val, nom]]);
+            }
+
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0, 1, 1, 2]);
+
+            var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+
+            chart.draw(view, {
+                height: 400,
+                width: 600,
+                series: {
+                    0: {
+                        type: 'bars'
+                    },
+                    1: {
+                        type: 'line',
+                        color: 'grey',
+                        lineWidth: 0,
+                        pointSize: 0,
+                        visibleInLegend: false
+                    }
+                },
+                vAxis: {
+                    maxValue: 100
+                }
+            });
+        }
+    </script>
+
+}

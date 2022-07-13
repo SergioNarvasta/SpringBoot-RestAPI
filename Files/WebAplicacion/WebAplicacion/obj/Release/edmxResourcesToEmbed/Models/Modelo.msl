@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="WebAppModelStoreContainer" CdmEntityContainer="WebAppEntities">
+    <EntitySetMapping Name="Menus_men">
+      <EntityTypeMapping TypeName="WebAppModel.Menus_men">
+        <MappingFragment StoreEntitySet="Menus_men">
+          <ScalarProperty Name="men_padmen" ColumnName="men_padmen" />
+          <ScalarProperty Name="men_nommen" ColumnName="men_nommen" />
+          <ScalarProperty Name="men_codmen" ColumnName="men_codmen" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Productos_prd">
+      <EntityTypeMapping TypeName="WebAppModel.Productos_prd">
+        <MappingFragment StoreEntitySet="Productos_prd">
+          <ScalarProperty Name="prd_canprd" ColumnName="prd_canprd" />
+          <ScalarProperty Name="prd_nomprd" ColumnName="prd_nomprd" />
+          <ScalarProperty Name="prd_codprd" ColumnName="prd_codprd" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

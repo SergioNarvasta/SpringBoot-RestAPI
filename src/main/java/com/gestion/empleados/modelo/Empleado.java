@@ -25,7 +25,6 @@ public class Empleado {
 	private String email;
 
 	public Empleado() {
-		
 	}
 
 	public Empleado(Long id, String nombre, String apellido, String email) {

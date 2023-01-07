@@ -44,21 +44,17 @@ public class EmpleadoControlador {
 			return ResponseEntity.ok(empleado);
 	}
 	
-	//este metodo sirve para actualizar empleado
 	@PutMapping("/empleados/{id}")
 	public ResponseEntity<Empleado> actualizarEmpleado(@PathVariable Long id,@RequestBody Empleado detallesEmpleado){
 		Empleado empleado = repositorio.findById(id)
-				            .orElseThrow(() -> new ResourceNotFoundException("No existe el empleado con el ID : " + id));
-		
+				            .orElseThrow(() -> new ResourceNotFoundException("No existe el empleado con el ID : " + id));		
 		empleado.setNombre(detallesEmpleado.getNombre());
 		empleado.setApellido(detallesEmpleado.getApellido());
 		empleado.setEmail(detallesEmpleado.getEmail());
-		
 		Empleado empleadoActualizado = repositorio.save(empleado);
 		return ResponseEntity.ok(empleadoActualizado);
     }
 	
-	//este metodo sirve para eliminar un empleado
 	@DeleteMapping("/empleados/{id}")
 	public ResponseEntity<Map<String,Boolean>> eliminarEmpleado(@PathVariable Long id){
 		Empleado empleado = repositorio.findById(id)

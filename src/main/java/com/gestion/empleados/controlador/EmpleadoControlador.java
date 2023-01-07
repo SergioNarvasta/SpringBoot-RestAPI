@@ -27,20 +27,16 @@ public class EmpleadoControlador {
 	@Autowired
 	private EmpleadoRepositorio repositorio;
 
-	//este metodo sirve para listar todos los empleados
 	@GetMapping("/empleados")
 	public List<Empleado> listarTodosLosEmpleados() {
 		return repositorio.findAll();
 	}
 	
-
-	//este metodo sirve para guardar el empleado
 	@PostMapping("/empleados")
 	public Empleado guardarEmpleado(@RequestBody Empleado empleado) {
 		return repositorio.save(empleado);
 	}
     
-	//este metodo sirve para buscar un empleado
 	@GetMapping("/empleados/{id}")
 	public ResponseEntity<Empleado> obtenerEmpleadoPorId(@PathVariable Long id){
 			Empleado empleado = repositorio.findById(id)

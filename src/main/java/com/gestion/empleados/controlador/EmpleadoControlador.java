@@ -1,5 +1,4 @@
 package com.gestion.empleados.controlador;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class EmpleadoControlador {
 	public ResponseEntity<Empleado> obtenerEmpleadoPorId(@PathVariable Long id){
 			Empleado empleado = repositorio.findById(id)
 					            .orElseThrow(() -> new ResourceNotFoundException("No existe el empleado con el ID : " + id));
-			return ResponseEntity.ok(empleado);
+	    return ResponseEntity.ok(empleado);
 	}
 	
 	@PutMapping("/empleados/{id}")

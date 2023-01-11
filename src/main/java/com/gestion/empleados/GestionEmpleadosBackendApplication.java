@@ -8,6 +8,7 @@ public class GestionEmpleadosBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GestionEmpleadosBackendApplication.class, args);
+		
 	}
 
 }
